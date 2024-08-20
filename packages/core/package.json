@@ -1,0 +1,27 @@
+{
+  "name": "@event-craft/core",
+  "author": "Max Konin <maxim21214@gmail.com>",
+  "license": "MIT",
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "test": "vitest run",
+    "lint": "eslint"
+  },
+  "devDependencies": {
+    "@repo/eslint-config": "workspace:*",
+    "@repo/typescript-config": "workspace:*",
+    "@vitest/coverage-v8": "^2.0.5"
+  },
+  "peerDependencies": {
+    "pino": "^8.18.0"
+  },
+  "dependencies": {
+    "eventemitter2": "^6.4.9",
+    "fp-ts": "^2.16.9",
+    "fp-ts-std": "^0.19.1",
+    "ulidx": "^2.4.0",
+    "vitest": "^2.0.5",
+    "zod": "^3.23.8"
+  }
+}
