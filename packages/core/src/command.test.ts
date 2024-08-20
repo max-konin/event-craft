@@ -42,7 +42,9 @@ describe('Base | Command', () => {
     const stateLoader = vi.fn();
 
     const projector = {
-      projectEvent: vi.fn(),
+      projectEvent: vi
+        .fn()
+        .mockImplementation((event: unknown) => Promise.resolve(event)),
     };
 
     const input = { email: 'user' };
