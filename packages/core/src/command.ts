@@ -119,7 +119,7 @@ export class CommandExecutionError extends Error {
   }
 }
 
-export const buildCommandedApp = <TEventRegistry extends EventRegistryBase>(
+export const buildEventCraftApp = <TEventRegistry extends EventRegistryBase>(
   eventEmitter: EventEmitter
 ) => ({
   bindExecution:

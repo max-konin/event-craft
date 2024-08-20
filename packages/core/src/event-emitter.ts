@@ -17,6 +17,13 @@ export type SubscribeOnFn = <
   fn: (event: TEventRegistry[TEventType]) => unknown
 ) => unknown;
 
+/**
+ * Builds an event emitter with the specified event registry.
+ *
+ * @template TEventRegistry - The type of the event registry.
+ * @param {ConstructorOptions} [options={}] - The options for the event emitter.
+ * @returns {Object} - An object with `emitEvent` and `subscribeOn` methods.
+ */
 export const buildEventEmitter = <TEventRegistry extends EventRegistryBase>(
   options: ConstructorOptions = {}
 ) => {

@@ -7,13 +7,13 @@ import { z } from 'zod';
 import {
   CommandValidationError,
   LoadingStateError,
-  buildCommandedApp,
+  buildEventCraftApp,
 } from './command';
 import { buildEventEmitter } from './event-emitter';
 import { TestEventRegistry } from './test-utils';
 
 const { bindExecution, dispatchCommand } =
-  buildCommandedApp<TestEventRegistry>(buildEventEmitter());
+  buildEventCraftApp<TestEventRegistry>(buildEventEmitter());
 
 describe('Base | Command', () => {
   describe('.dispatchCommand', () => {
