@@ -1,0 +1,44 @@
+{
+  "name": "example",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --turbo",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "db:generate": "prisma generate",
+    "db:push": "prisma db push --skip-generate",
+    "db:deploy": "prisma migrate deploy",
+    "db:migrate:dev": "dotenv -e .env prisma migrate dev"
+  },
+  "dependencies": {
+    "@chakra-ui/next-js": "^2.2.0",
+    "@chakra-ui/react": "^2.8.2",
+    "@emotion/react": "^11.13.3",
+    "@emotion/styled": "^11.13.0",
+    "@event-craft/core": "workspace:*",
+    "@prisma/client": "5.18.0",
+    "fp-ts": "^2.16.9",
+    "framer-motion": "^11.3.29",
+    "next": "15.0.0-rc.0",
+    "react": "19.0.0-rc-f994737d14-20240522",
+    "react-dom": "19.0.0-rc-f994737d14-20240522",
+    "ulidx": "^2.4.0",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@event-craft/vitest-either-matchers": "workspace:*",
+    "@repo/eslint-config": "workspace:*",
+    "@repo/typescript-config": "workspace:*",
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "dotenv-cli": "^7.4.2",
+    "eslint": "^8",
+    "eslint-config-next": "15.0.0-rc.0",
+    "prisma": "^5.18.0",
+    "typescript": "^5",
+    "vitest": "^2.0.5"
+  }
+}

@@ -6,23 +6,15 @@ export type Projector<TEventRegistry extends EventRegistryBase> = {
   ) => Promise<TEventRegistry[TEventType]>;
 };
 
-export type DBTransactionProvider<T> = {
-  transaction: (fn: (tx: T) => Promise<unknown>) => Promise<unknown>;
-};
-
 export const buildProjector = <
   TEventRegistry extends EventRegistryBase,
-  TTransaction,
+  TContext,
 >(
-  transactionProvider: DBTransactionProvider<TTransaction>
+  withContext: (fn: (ctx: TContext) => Promise<unknown>) => Promise<unknown>
 ) => {
-  type Transaction = Parameters<
-    Parameters<typeof transactionProvider.transaction>[0]
-  >[0];
-
   const project = <TEventType extends keyof TEventRegistry>(
     eventType: TEventType,
-    fn: (tx: Transaction, event: TEventRegistry[TEventType]) => Promise<unknown>
+    fn: (ctx: TContext, event: TEventRegistry[TEventType]) => Promise<unknown>
   ) => ({
     eventType,
     fn,
@@ -30,22 +22,23 @@ export const buildProjector = <
 
   type EventProject = ReturnType<typeof project>;
 
-  const withTransaction = (projectors: EventProject[]) => ({
+  const compose = (projectors: EventProject[]) => ({
     projectEvent: async <TEventType extends keyof TEventRegistry>(
       event: TEventRegistry[TEventType]
     ) => {
-      transactionProvider.transaction(async (tx) => {
+      await withContext(async (ctx) => {
         for (const p of projectors.filter(
           (el) => el.eventType === event.type
         )) {
-          await p.fn(tx, event);
+          await p.fn(ctx, event);
         }
       });
+      return event;
     },
   });
 
   return {
     project,
-    withTransaction,
+    compose,
   };
 };

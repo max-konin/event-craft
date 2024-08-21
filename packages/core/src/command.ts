@@ -9,6 +9,7 @@ import {
   map,
   fromEither,
   chainW,
+  match,
 } from 'fp-ts/TaskEither';
 import { ZodError, z } from 'zod';
 
@@ -119,7 +120,9 @@ export class CommandExecutionError extends Error {
   }
 }
 
-export const buildEventCraftApp = <TEventRegistry extends EventRegistryBase>(
+export const buildCommandDispatcher = <
+  TEventRegistry extends EventRegistryBase,
+>(
   eventEmitter: EventEmitter
 ) => ({
   bindExecution:
@@ -198,3 +201,12 @@ export const buildEventCraftApp = <TEventRegistry extends EventRegistryBase>(
         chainW((event) => tryCatch(() => eventEmitter.emitEvent(event), String))
       ),
 });
+
+export const respondWith = <TData, TResponse>(
+  responder: (data: TData) => TResponse
+) =>
+  match((e) => {
+    throw e;
+  }, responder);
+
+export const respondNull = () => respondWith(() => null);
