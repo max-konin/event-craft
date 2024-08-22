@@ -2,19 +2,21 @@
   "name": "@event-craft/vitest-either-matchers",
   "author": "Max Konin <maxim21214@gmail.com>",
   "license": "MIT",
-  "version": "0.0.0",
-  "type": "module",
-  "main": "src/index.ts",
-  "types": "src/index.ts",
+  "version": "0.1.0",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
   "scripts": {
     "test": "vitest run",
-    "lint": "eslint"
+    "lint": "eslint",
+    "build": "tsup src/index.ts --format cjs,esm --dts"
   },
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",
     "@repo/typescript-config": "workspace:*",
     "@vitest/expect": "^2.0.5",
     "fp-ts": "^2.16.9",
+    "tsup": "^8.2.4",
     "vitest": "^2.0.5"
   }
 }

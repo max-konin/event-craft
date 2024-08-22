@@ -1,81 +1,71 @@
-# Turborepo starter
+# Event Craft
 
-This is an official starter Turborepo.
+**Event Craft** is a Node.js package designed for building domain logic using modern patterns like CQRS, and Railway Oriented Programming, and simple implementation of Event Sourcing. This package aims to simplify the management of complex business logic in distributed systems. The core concept is to use Either from fp-ts package to describe business rules.
 
-## Using this example
+## Installation
 
-Run the following command:
+Install the package using `pnpm`:
 
-```sh
-npx create-turbo@latest
+```bash
+pnpm install @event-craft/core
 ```
 
-## What's inside?
+## Usage
 
-This Turborepo includes the following packages/apps:
+Simple command module:
 
-### Apps and Packages
+```typescript
+import { left, right } from 'fp-ts/Either';
+import { pipe } from 'fp-ts/lib/function';
+import { z } from 'zod';
+import { buildEvent } from '@event-craft/core';
 
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
+export const createAccountInputSchema = z.object({
+  aggregateId: z.string(),
+});
 
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
+export type CreateAccountInput = z.infer<typeof createAccountInputSchema>;
 
-### Utilities
+export type AccountCreatedEventData = CreateAccountInput;
 
-This Turborepo has some additional tools already setup for you:
+export const buildAccountCreatedEvent = (
+  data: AccountCreatedEventData,
+  aggregateVersion: bigint
+) =>
+  buildEvent({
+    type: ACCOUNT_CREATED_EVENT_TYPE,
+    data,
+    aggregateVersion,
+  });
 
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
+export type AccountCreatedEvent = ReturnType<typeof buildAccountCreatedEvent>;
 
-### Build
+export const CreateAccountCommand = pipe(
+  {
+    type: 'CREATE_ACCOUNT_COMMAND' as const,
+    schema: createAccountInputSchema,
+  },
+  bindExecution((account: AccountOrNull, { data }) => {
+    if (account) {
+      return left('Account already exists');
+    }
 
-To build all apps and packages, run the following command:
-
-```
-cd my-turborepo
-pnpm build
-```
-
-### Develop
-
-To develop all apps and packages, run the following command:
-
-```
-cd my-turborepo
-pnpm dev
-```
-
-### Remote Caching
-
-Turborepo can use a technique known as [Remote Caching](https://turbo.build/repo/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
-
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup), then enter the following commands:
-
-```
-cd my-turborepo
-npx turbo login
+    return right(buildAccountCreatedEvent(data, BigInt(1)));
+  })
+);
 ```
 
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
+## Example Project
 
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
+A full example project is available in the apps/example directory. You can run the example by navigating to the root of the repository and using the following commands:
 
-```
-npx turbo link
-```
+pnpm install
+pnpm run
 
-## Useful Links
+## Contributing
 
-Learn more about the power of Turborepo:
+Feel free to contribute by opening issues, suggesting features, or submitting pull requests.
 
-- [Tasks](https://turbo.build/repo/docs/core-concepts/monorepos/running-tasks)
-- [Caching](https://turbo.build/repo/docs/core-concepts/caching)
-- [Remote Caching](https://turbo.build/repo/docs/core-concepts/remote-caching)
-- [Filtering](https://turbo.build/repo/docs/core-concepts/monorepos/filtering)
-- [Configuration Options](https://turbo.build/repo/docs/reference/configuration)
-- [CLI Usage](https://turbo.build/repo/docs/reference/command-line-reference)
+## License
+
+This project is licensed under the MIT License.
