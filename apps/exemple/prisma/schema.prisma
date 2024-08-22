@@ -19,3 +19,17 @@ model Account {
 
   aggregateVersion BigInt
 }
+
+model DomainEvent {
+  id               String @id @db.VarChar(26)
+  type             String @db.VarChar(255)
+  aggregateId      String @db.VarChar(255)
+  aggregateVersion BigInt
+
+  data Json
+
+  createdAt DateTime @default(now())
+
+  @@unique([aggregateId, aggregateVersion])
+  @@index([type])
+}

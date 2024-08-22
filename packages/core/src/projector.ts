@@ -1,3 +1,4 @@
+import { DomainEventBase } from './domain-event';
 import { EventRegistryBase } from './event-registry';
 
 export type Projector<TEventRegistry extends EventRegistryBase> = {
@@ -10,7 +11,10 @@ export const buildProjector = <
   TEventRegistry extends EventRegistryBase,
   TContext,
 >(
-  withContext: (fn: (ctx: TContext) => Promise<unknown>) => Promise<unknown>
+  aroundProjection: (
+    fn: (ctx: TContext) => Promise<unknown>,
+    event: DomainEventBase
+  ) => Promise<unknown>
 ) => {
   const project = <TEventType extends keyof TEventRegistry>(
     eventType: TEventType,
@@ -26,13 +30,13 @@ export const buildProjector = <
     projectEvent: async <TEventType extends keyof TEventRegistry>(
       event: TEventRegistry[TEventType]
     ) => {
-      await withContext(async (ctx) => {
+      await aroundProjection(async (ctx) => {
         for (const p of projectors.filter(
           (el) => el.eventType === event.type
         )) {
           await p.fn(ctx, event);
         }
-      });
+      }, event);
       return event;
     },
   });

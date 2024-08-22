@@ -19,4 +19,17 @@ export const { dispatchCommand, bindExecution } =
 export const { project, compose } = buildProjector<
   EventRegistry,
   PrismaTransaction
->((fn) => prisma.$transaction(fn));
+>((fn, { id, data, aggregateVersion, type }) =>
+  prisma.$transaction(async (tx) => {
+    await fn(tx);
+    await prisma.domainEvent.create({
+      data: {
+        id,
+        data,
+        type,
+        aggregateVersion,
+        aggregateId: data.aggregateId,
+      },
+    });
+  })
+);
