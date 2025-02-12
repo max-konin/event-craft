@@ -1,7 +1,7 @@
 import {
   buildCommandDispatcher,
   buildEventEmitter,
-  buildProjector,
+  initProjectorsBuilder,
 } from '@event-craft/core';
 import { EventRegistry } from './event-registry';
 import { prisma } from '../db';
@@ -16,7 +16,7 @@ export const eventEmitter = buildEventEmitter<EventRegistry>();
 export const { dispatchCommand, bindExecution } =
   buildCommandDispatcher<EventRegistry>(eventEmitter);
 
-export const { project, compose } = buildProjector<
+export const { project, buildProjector } = initProjectorsBuilder<
   EventRegistry,
   PrismaTransaction
 >((fn, { id, data, aggregateVersion, type }) =>

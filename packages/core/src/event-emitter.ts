@@ -32,6 +32,7 @@ export const buildEventEmitter = <TEventRegistry extends EventRegistryBase>(
   type EventType = keyof TEventRegistry;
 
   return {
+    eventEmitter,
     emitEvent: async <TEventType extends EventType>(
       event: TEventRegistry[TEventType]
     ) => {

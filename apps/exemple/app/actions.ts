@@ -1,7 +1,7 @@
 'use server';
 
 import { pipe } from 'fp-ts/lib/function';
-import { compose, dispatchCommand } from '../domain/app';
+import { dispatchCommand } from '../domain/app';
 import { CreateAccountCommand, findAccountById } from '../domain/account';
 import { AccountProjector } from '../domain/account/projectors';
 import { ulid } from 'ulidx';
@@ -11,7 +11,7 @@ import { revalidatePath } from 'next/cache';
 const dispatchCreateAccountCommand = dispatchCommand({
   commandModule: CreateAccountCommand,
   stateLoader: findAccountById,
-  projector: compose(AccountProjector),
+  projector: AccountProjector,
 });
 
 export async function createAccount() {

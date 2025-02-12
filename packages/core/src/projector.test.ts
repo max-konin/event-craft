@@ -1,5 +1,5 @@
 import { vi, test, expect } from 'vitest';
-import { buildProjector } from './projector';
+import { initProjectorsBuilder } from './projector';
 import { OpenAccountTestEvent, TestEventRegistry } from './test-utils';
 import { ulid } from 'ulidx';
 
@@ -11,13 +11,13 @@ const transaction = {
 
 type ProjectorContext = typeof transaction;
 
-test('.buildProjector', async () => {
-  const { project, compose } = buildProjector<
+test('.initProjectorsBuilder', async () => {
+  const { project, buildProjector } = initProjectorsBuilder<
     TestEventRegistry,
     ProjectorContext
   >((fn) => fn(transaction));
 
-  const projector = compose([
+  const projector = buildProjector([
     project('OPEN_ACCOUNT', async (tx, event) => {
       await tx.account.create(event.data);
     }),

@@ -7,7 +7,7 @@ export type Projector<TEventRegistry extends EventRegistryBase> = {
   ) => Promise<TEventRegistry[TEventType]>;
 };
 
-export const buildProjector = <
+export const initProjectorsBuilder = <
   TEventRegistry extends EventRegistryBase,
   TContext,
 >(
@@ -24,9 +24,12 @@ export const buildProjector = <
     fn,
   });
 
-  type EventProject = ReturnType<typeof project>;
+  type EventProject = {
+    eventType: string;
+    fn: (ctx: TContext, event: any) => Promise<unknown>;
+  };
 
-  const compose = (projectors: EventProject[]) => ({
+  const buildProjector = (projectors: EventProject[]) => ({
     projectEvent: async <TEventType extends keyof TEventRegistry>(
       event: TEventRegistry[TEventType]
     ) => {
@@ -43,6 +46,6 @@ export const buildProjector = <
 
   return {
     project,
-    compose,
+    buildProjector,
   };
 };
